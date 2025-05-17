@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 7.1%;
+  --foreground: 0 0% 98%;
+  --muted: 0 0% 15.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --popover: 0 0% 11.9%;
+  --popover-foreground: 0 0% 90%;
+  --card: 0 0% 11.9%;
+  --card-foreground: 0 0% 90%;
+  --border: 0 0% 15.9%;
+  --input: 0 0% 15.9%;
+  --primary: 334 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 267 82% 65%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 187 86% 40%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 334 100% 50%;
+  --radius: 0.5rem;
+  --chart-1: 334 100% 50%;
+  --chart-2: 267 82% 65%;
+  --chart-3: 187 86% 40%;
+  --chart-4: 267 82% 65%;
+  --chart-5: 0 84.2% 60.2%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+@layer components {
+  .profile-card {
+    @apply transition-transform hover:translate-y-[-4px] duration-300;
+  }
+
+  .tab-indicator {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .coin-icon {
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3));
+  }
+
+  .message-bubble {
+    @apply max-w-[80%];
+  }
+
+  .menu-item.active {
+    @apply border-primary text-primary;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
