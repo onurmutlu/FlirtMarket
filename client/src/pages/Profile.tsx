@@ -6,8 +6,25 @@ import { useToast } from "@/hooks/use-toast";
 import { User } from "@/types";
 import { closeWebApp } from "@/lib/telegram";
 
-export default function Profile() {
-  const { user, logout } = useUser();
+interface ProfileProps {
+  user?: any;
+}
+
+export default function Profile({ user: userProp }: ProfileProps) {
+  let userData;
+  let logoutFn = () => {};
+  
+  // Try to use the provided user prop first, otherwise fall back to useUser
+  try {
+    const userContext = useUser();
+    userData = userProp || userContext.user;
+    logoutFn = userContext.logout;
+  } catch (error) {
+    userData = userProp;
+  }
+  
+  const user = userData;
+  const logout = logoutFn;
   const { toast } = useToast();
   const queryClient = useQueryClient();
   

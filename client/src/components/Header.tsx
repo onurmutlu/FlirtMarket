@@ -2,10 +2,24 @@ import { useUser } from "@/contexts/UserContext";
 
 interface HeaderProps {
   onCoinPurchase: () => void;
+  // Added user prop so we can pass it directly from App during development
+  user?: any;
 }
 
-export default function Header({ onCoinPurchase }: HeaderProps) {
-  const { user } = useUser();
+export default function Header({ onCoinPurchase, user: userProp }: HeaderProps) {
+  // Try to use the provided user prop first, otherwise fall back to useUser
+  let userData;
+  let userError = null;
+  
+  try {
+    const userContext = useUser();
+    userData = userProp || userContext.user;
+  } catch (error) {
+    userData = userProp;
+    userError = error;
+  }
+  
+  const user = userData;
   
   if (!user) return null;
   

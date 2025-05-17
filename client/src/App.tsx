@@ -127,13 +127,14 @@ function App() {
       <div className="flex flex-col h-screen overflow-hidden bg-background text-foreground">
         <Header 
           onCoinPurchase={toggleCoinPurchaseModal} 
+          user={user}
         />
         
         <main className="flex-1 overflow-hidden relative">
           <TabNavigation 
             currentTab={appState.currentTab} 
             onSwitchTab={switchTab} 
-            showEarnings={user?.type === USER_TYPES.PERFORMER}
+            showEarnings={user?.type === 'performer'}
           />
 
           <div className="tab-content h-full overflow-auto">
@@ -147,10 +148,10 @@ function App() {
             )}
             
             {!appState.showPerformerProfile && !appState.showConversation && appState.currentTab === 'profile' && (
-              <Profile />
+              <Profile user={user} />
             )}
             
-            {!appState.showPerformerProfile && !appState.showConversation && appState.currentTab === 'earnings' && user?.type === USER_TYPES.PERFORMER && (
+            {!appState.showPerformerProfile && !appState.showConversation && appState.currentTab === 'earnings' && user?.type === 'performer' && (
               <Earnings />
             )}
             
