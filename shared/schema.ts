@@ -1,5 +1,6 @@
 import { pgTable, text, serial, integer, boolean, timestamp, real, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 import { z } from "zod";
 
 // User types: regular (male) and performer (female)
@@ -9,6 +10,9 @@ export const USER_TYPES = {
   ADMIN: "admin",
 } as const;
 
+// User type values as simple string array for schema
+export const USER_TYPE_VALUES = ["regular", "performer", "admin"];
+
 // User table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -16,7 +20,7 @@ export const users = pgTable("users", {
   username: text("username"),
   firstName: text("first_name").notNull(),
   lastName: text("last_name"),
-  type: text("type", { enum: Object.values(USER_TYPES) }).notNull().default(USER_TYPES.REGULAR),
+  type: text("type", { enum: USER_TYPE_VALUES }).notNull().default(USER_TYPES.REGULAR),
   coins: integer("coins").notNull().default(0),
   profilePhoto: text("profile_photo"),
   bio: text("bio"),
@@ -89,6 +93,55 @@ export const insertTransactionSchema = createInsertSchema(transactions).omit({
   id: true,
   createdAt: true,
 });
+
+// Define table relations
+export const usersRelations = relations(users, ({ many }) => ({
+  sentMessages: many(messages, { relationName: 'sender' }),
+  receivedMessages: many(messages, { relationName: 'recipient' }),
+  conversations: many(conversations),
+  transactions: many(transactions)
+}));
+
+export const conversationsRelations = relations(conversations, ({ one, many }) => ({
+  regularUser: one(users, {
+    fields: [conversations.regularUserId],
+    references: [users.id]
+  }),
+  performer: one(users, {
+    fields: [conversations.performerId],
+    references: [users.id]
+  }),
+  messages: many(messages)
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.id]
+  }),
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+    relationName: 'sender'
+  }),
+  recipient: one(users, {
+    fields: [messages.recipientId],
+    references: [users.id],
+    relationName: 'recipient'
+  })
+}));
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  user: one(users, {
+    fields: [transactions.userId],
+    references: [users.id]
+  }),
+  relatedUser: one(users, {
+    fields: [transactions.relatedUserId],
+    references: [users.id],
+    relationName: 'relatedTransactions'
+  })
+}));
 
 // Type definitions
 export type User = typeof users.$inferSelect;
