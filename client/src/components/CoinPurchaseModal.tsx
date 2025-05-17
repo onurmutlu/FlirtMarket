@@ -4,7 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { CoinPackage } from "@/types";
-import { Coins, CreditCard, Wallet, Check, X } from "lucide-react";
+import { Coins, CreditCard, Wallet, Check, X, Smartphone, Building2 } from "lucide-react";
 
 interface CoinPurchaseModalProps {
   onClose: () => void;
@@ -224,9 +224,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
                 }`}
                 onClick={() => setPaymentMethod('credit_card')}
               >
-                <span className={`material-icons ${paymentMethod === 'credit_card' ? 'text-primary' : 'text-muted-foreground'}`}>
-                  credit_card
-                </span>
+                <CreditCard className={`w-5 h-5 ${paymentMethod === 'credit_card' ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <div 
                 className={`flex-shrink-0 rounded-lg p-2 w-16 h-10 flex items-center justify-center ${
@@ -236,9 +234,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
                 }`}
                 onClick={() => setPaymentMethod('bank')}
               >
-                <span className={`material-icons ${paymentMethod === 'bank' ? 'text-primary' : 'text-muted-foreground'}`}>
-                  account_balance
-                </span>
+                <Building2 className={`w-5 h-5 ${paymentMethod === 'bank' ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <div 
                 className={`flex-shrink-0 rounded-lg p-2 w-16 h-10 flex items-center justify-center ${
@@ -248,9 +244,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
                 }`}
                 onClick={() => setPaymentMethod('mobile')}
               >
-                <span className={`material-icons ${paymentMethod === 'mobile' ? 'text-primary' : 'text-muted-foreground'}`}>
-                  smartphone
-                </span>
+                <Smartphone className={`w-5 h-5 ${paymentMethod === 'mobile' ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <div 
                 className={`flex-shrink-0 rounded-lg p-2 w-16 h-10 flex items-center justify-center ${
@@ -260,9 +254,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
                 }`}
                 onClick={() => setPaymentMethod('wallet')}
               >
-                <span className={`material-icons ${paymentMethod === 'wallet' ? 'text-primary' : 'text-muted-foreground'}`}>
-                  wallet
-                </span>
+                <Wallet className={`w-5 h-5 ${paymentMethod === 'wallet' ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
             </div>
           </div>
