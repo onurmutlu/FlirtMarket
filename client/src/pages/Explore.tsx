@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import PerformerCard from '@/components/PerformerCard';
 import { User } from '@/types';
+import { Search, SlidersHorizontal, SearchX, AlertCircle } from 'lucide-react';
 
 interface ExploreProps {
   onViewProfile: (performerId: number) => void;
@@ -48,7 +49,7 @@ export default function Explore({ onViewProfile }: ExploreProps) {
       {/* Search and Filter Bar */}
       <div className="mb-4 flex items-center">
         <div className="relative flex-1">
-          <span className="material-icons absolute left-3 top-2.5 text-muted-foreground text-lg">search</span>
+          <Search className="absolute left-3 top-2.5 text-muted-foreground w-4 h-4" />
           <input 
             type="text" 
             placeholder="Şovcu ara..." 
@@ -58,7 +59,7 @@ export default function Explore({ onViewProfile }: ExploreProps) {
           />
         </div>
         <button className="ml-2 p-2 bg-card rounded-full border border-border">
-          <span className="material-icons text-muted-foreground">tune</span>
+          <SlidersHorizontal className="text-muted-foreground w-4 h-4" />
         </button>
       </div>
       
@@ -100,13 +101,13 @@ export default function Explore({ onViewProfile }: ExploreProps) {
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center p-6 text-center">
-          <span className="material-icons text-4xl text-muted-foreground mb-3">error_outline</span>
+          <AlertCircle className="w-12 h-12 text-muted-foreground mb-3" />
           <p className="text-foreground font-medium mb-2">Şovcular yüklenemedi</p>
           <p className="text-sm text-muted-foreground">Lütfen daha sonra tekrar deneyin</p>
         </div>
       ) : filteredPerformers.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-6 text-center">
-          <span className="material-icons text-4xl text-muted-foreground mb-3">search_off</span>
+          <SearchX className="w-12 h-12 text-muted-foreground mb-3" />
           <p className="text-foreground font-medium mb-2">Şovcu bulunamadı</p>
           <p className="text-sm text-muted-foreground">Lütfen farklı bir arama terimi deneyin veya filtrelerinizi değiştirin</p>
         </div>
