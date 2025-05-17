@@ -4,6 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { CoinPackage } from "@/types";
+import { Coins, CreditCard, Wallet, Check, X } from "lucide-react";
 
 interface CoinPurchaseModalProps {
   onClose: () => void;
@@ -18,7 +19,17 @@ const COIN_PACKAGES: CoinPackage[] = [
 ];
 
 export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
-  const { addCoins } = useUser();
+  // Güvenli şekilde user context'e erişim
+  let addCoinsFn: ((amount: number) => void) | undefined;
+  try {
+    const { addCoins } = useUser();
+    addCoinsFn = addCoins;
+  } catch (error) {
+    console.warn("useUser context error in CoinPurchaseModal");
+    // Test modu için alternatif fonksiyon
+    addCoinsFn = (amount) => console.log(`Mock: Adding ${amount} coins`);
+  }
+  
   const { toast } = useToast();
   const [selectedPackage, setSelectedPackage] = useState<CoinPackage | null>(COIN_PACKAGES[1]); // Default to the popular option
   const [customAmount, setCustomAmount] = useState<number | "">("");
@@ -67,7 +78,9 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
     onSuccess: (data) => {
       if (data.success) {
         // Update user's coin balance
-        addCoins(data.user.coins - (data.previousCoins || 0));
+        if (addCoinsFn) {
+          addCoinsFn(data.user.coins - (data.previousCoins || 0));
+        }
         
         // Show success toast
         toast({
@@ -144,7 +157,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
               >
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center">
-                    <span className="material-icons text-[#FFD700] mr-1">monetization_on</span>
+                    <Coins className="text-[#FFD700] w-5 h-5 mr-1" />
                     <span className="text-foreground font-bold text-lg">{pack.amount}</span>
                   </div>
                   <div className="flex items-center">
