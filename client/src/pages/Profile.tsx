@@ -5,6 +5,24 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@/types";
 import { closeWebApp } from "@/lib/telegram";
+import { 
+  User as UserIcon, 
+  MapPin, 
+  Calendar, 
+  Edit, 
+  LogOut, 
+  Save,
+  Clock, 
+  Star, 
+  Gift, 
+  DollarSign,
+  ChevronRight,
+  Globe,
+  Bell,
+  CreditCard,
+  HelpCircle,
+  Shield
+} from "lucide-react";
 
 interface ProfileProps {
   user?: any;
@@ -226,37 +244,37 @@ export default function Profile({ user: userProp }: ProfileProps) {
               <div className="divide-y divide-border">
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">account_circle</span>
+                    <UserIcon className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Profil Bilgileri</span>
                   </div>
-                  <span className="material-icons text-muted-foreground">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">language</span>
+                    <Globe className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Dil</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-muted-foreground mr-2">Türkçe</span>
-                    <span className="material-icons text-muted-foreground">chevron_right</span>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
                   </div>
                 </div>
                 
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">notifications</span>
+                    <Bell className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Bildirimler</span>
                   </div>
-                  <span className="material-icons text-muted-foreground">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">credit_card</span>
+                    <CreditCard className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Ödeme Yöntemleri</span>
                   </div>
-                  <span className="material-icons text-muted-foreground">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
               </div>
             </div>
@@ -269,26 +287,27 @@ export default function Profile({ user: userProp }: ProfileProps) {
               <div className="divide-y divide-border">
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">help_outline</span>
+                    <HelpCircle className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Yardım Merkezi</span>
                   </div>
-                  <span className="material-icons text-muted-foreground">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 
                 <div className="p-4 flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="material-icons mr-3 text-muted-foreground">policy</span>
+                    <Shield className="w-5 h-5 mr-3 text-muted-foreground" />
                     <span className="text-foreground">Gizlilik Politikası</span>
                   </div>
-                  <span className="material-icons text-muted-foreground">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
                 </div>
               </div>
             </div>
             
             <button 
-              className="w-full py-3 text-red-400 border border-red-400/30 rounded-lg mb-8"
+              className="w-full py-3 text-red-400 border border-red-400/30 rounded-lg mb-8 flex items-center justify-center"
               onClick={handleLogout}
             >
+              <LogOut className="w-4 h-4 mr-2" />
               Çıkış Yap
             </button>
           </>
