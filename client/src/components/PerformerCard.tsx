@@ -1,4 +1,5 @@
 import { User } from '@/types';
+import { Coins, MessageCircle, Star } from 'lucide-react';
 
 interface PerformerCardProps {
   performer: User;
@@ -61,11 +62,11 @@ export default function PerformerCard({ performer, onClick }: PerformerCardProps
       <div className="p-2">
         <div className="flex justify-between items-center mb-1">
           <div className="flex items-center">
-            <span className="material-icons text-[#FFD700] text-sm mr-1">monetization_on</span>
+            <Coins className="text-[#FFD700] w-3.5 h-3.5 mr-1" />
             <span className="text-[#FFD700] text-xs font-medium">{performer.messagePrice || 35} coin/msg</span>
           </div>
           <div className="flex items-center">
-            <span className="material-icons text-muted-foreground text-sm mr-1">chat_bubble</span>
+            <MessageCircle className="text-muted-foreground w-3.5 h-3.5 mr-1" />
             <span className="text-muted-foreground text-xs">
               {formatResponseTime(performer.responseTime)}
             </span>
