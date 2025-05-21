@@ -4,11 +4,13 @@ import { User } from "@/types";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { formatDistanceToNow, format } from "date-fns";
+import { tr } from "date-fns/locale";
 
 interface PerformerProfileProps {
-  performerId: number;
+  performerId: string;
   onBack: () => void;
-  onStartConversation: (performerId: number) => void;
+  onStartConversation: (performerId: string) => void;
 }
 
 export default function PerformerProfile({ 
@@ -48,7 +50,7 @@ export default function PerformerProfile({
       });
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate conversations query to update the list
       queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
       
@@ -176,6 +178,13 @@ export default function PerformerProfile({
     return diffMinutes < 5;
   };
   
+  // Rating kontrolü
+  const rating = performer.rating ?? 0;
+
+  // Tarih dönüşümleri
+  const lastActive = performer.lastActive ? new Date(performer.lastActive) : undefined;
+  const createdAt = performer.createdAt ? new Date(performer.createdAt) : undefined;
+  
   return (
     <div className="h-full flex flex-col">
       <div className="relative">
@@ -199,7 +208,7 @@ export default function PerformerProfile({
             </h2>
             <div className="flex items-center bg-black/40 rounded-full px-2 py-0.5">
               <span className="material-icons text-yellow-400 text-xs mr-0.5">star</span>
-              <span className="text-white text-xs">{performer.rating.toFixed(1)}</span>
+              <span className="text-white text-xs">{rating.toFixed(1)}</span>
             </div>
           </div>
           
@@ -219,7 +228,7 @@ export default function PerformerProfile({
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 flex items-center justify-between bg-card border-b border-border">
           <div className="flex items-center">
-            {isPerformerOnline(performer.lastActive) ? (
+            {isPerformerOnline(lastActive) ? (
               <>
                 <div className="bg-green-500 w-2 h-2 rounded-full mr-2"></div>
                 <span className="text-foreground font-medium">Şu anda çevrimiçi</span>
@@ -228,7 +237,7 @@ export default function PerformerProfile({
               <>
                 <div className="bg-muted w-2 h-2 rounded-full mr-2"></div>
                 <span className="text-foreground font-medium">
-                  {formatActivityStatus(performer.lastActive)}
+                  {formatActivityStatus(lastActive)}
                 </span>
               </>
             )}
@@ -282,28 +291,33 @@ export default function PerformerProfile({
           onClick={toggleFavorite}
         >
           <span className={`material-icons ${isFavorited ? 'text-red-500' : 'text-muted-foreground'}`}>
-            {isFavorited ? 'favorite' : 'favorite_border'}
+            favorite
           </span>
         </button>
-        
         <button 
-          className="flex-1 ml-3 py-3 bg-primary text-white rounded-full font-medium disabled:opacity-70 disabled:cursor-not-allowed"
-          onClick={handleStartConversation}
-          disabled={createConversationMutation.isPending}
+          className="flex items-center gap-2 text-sm"
+          onClick={toggleFavorite}
         >
-          {createConversationMutation.isPending ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              İşleniyor...
-            </span>
-          ) : (
-            `Mesaj Gönder (${performer.messagePrice || 35} coin)`
-          )}
+          <span className={`material-icons ${isFavorited ? 'text-red-500' : 'text-muted-foreground'}`}>
+            favorite
+          </span>
+          {isFavorited ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
         </button>
       </div>
+      
+      {/* Son aktiflik */}
+      {lastActive && (
+        <div className="text-sm text-muted-foreground">
+          Son görülme: {formatDistanceToNow(lastActive, { addSuffix: true, locale: tr })}
+        </div>
+      )}
+
+      {/* Katılma tarihi */}
+      {createdAt && (
+        <div className="text-sm text-muted-foreground">
+          Katılma: {format(createdAt, 'MMMM yyyy', { locale: tr })}
+        </div>
+      )}
     </div>
   );
 }

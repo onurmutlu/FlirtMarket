@@ -7,7 +7,6 @@ import { User } from "@/types";
 import { closeWebApp } from "@/lib/telegram";
 import { 
   User as UserIcon, 
-  MapPin, 
   Calendar, 
   Edit, 
   LogOut, 
@@ -21,11 +20,20 @@ import {
   Bell,
   CreditCard,
   HelpCircle,
-  Shield
+  Shield,
+  Camera
 } from "lucide-react";
 
 interface ProfileProps {
-  user?: any;
+  user?: User;
+}
+
+interface FormData {
+  bio: string;
+  location: string;
+  age: string;
+  interests: string;
+  messagePrice: number;
 }
 
 export default function Profile({ user: userProp }: ProfileProps) {
@@ -47,10 +55,10 @@ export default function Profile({ user: userProp }: ProfileProps) {
   const queryClient = useQueryClient();
   
   const [editingProfile, setEditingProfile] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     bio: user?.bio || "",
     location: user?.location || "",
-    age: user?.age || "",
+    age: user?.age?.toString() || "",
     interests: user?.interests?.join(", ") || "",
     messagePrice: user?.messagePrice || 35,
   });
@@ -91,15 +99,14 @@ export default function Profile({ user: userProp }: ProfileProps) {
     updateProfileMutation.mutate({
       bio: formData.bio,
       location: formData.location,
-      age: formData.age ? parseInt(formData.age) : undefined,
+      age: formData.age ? parseInt(formData.age) : null,
       interests: interestsArray,
-      messagePrice: parseInt(formData.messagePrice.toString()),
+      messagePrice: formData.messagePrice,
     });
   };
   
   const handleLogout = () => {
     logout();
-    closeWebApp();
   };
   
   if (!user) return null;
@@ -115,7 +122,7 @@ export default function Profile({ user: userProp }: ProfileProps) {
           />
           {editingProfile && (
             <button className="absolute bottom-0 right-0 w-8 h-8 bg-card rounded-full border border-border flex items-center justify-center">
-              <span className="material-icons text-muted-foreground text-sm">edit</span>
+              <div className="i-material-symbols:edit text-muted-foreground text-sm"></div>
             </button>
           )}
         </div>
@@ -132,7 +139,7 @@ export default function Profile({ user: userProp }: ProfileProps) {
           <div className="bg-card rounded-lg p-3 text-center">
             <p className="text-muted-foreground text-sm mb-1">Coin Bakiyesi</p>
             <div className="flex items-center justify-center">
-              <span className="material-icons text-[#FFD700] mr-1">monetization_on</span>
+              <div className="i-material-symbols:monetization-on text-[#FFD700] mr-1"></div>
               <span className="text-xl font-bold text-[#FFD700]">{user.coins || 0}</span>
             </div>
           </div>
@@ -140,7 +147,7 @@ export default function Profile({ user: userProp }: ProfileProps) {
           <div className="bg-card rounded-lg p-3 text-center">
             <p className="text-muted-foreground text-sm mb-1">Toplam Mesaj</p>
             <div className="flex items-center justify-center">
-              <span className="material-icons text-muted-foreground mr-1">chat_bubble</span>
+              <div className="i-material-symbols:chat-bubble text-muted-foreground mr-1"></div>
               <span className="text-xl font-bold text-foreground">-</span>
             </div>
           </div>

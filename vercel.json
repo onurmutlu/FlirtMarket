@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "cd client && npm install && npm run build",
+        "outputDirectory": "client/dist"
+      }
+    },
+    {
+      "src": "server/src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "buildCommand": "cd server && npm install && tsc"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/src/index.ts"
+    },
+    {
+      "src": "/ws",
+      "dest": "/server/src/index.ts"
+    },
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "/server/src/index.ts"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/$1"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "TELEGRAM_BOT_TOKEN": "@telegram-bot-token",
+    "NODE_ENV": "production",
+    "CLIENT_URL": "https://flirt.siyahkare.com",
+    "WEBAPP_URL": "https://t.me/FlirtMarketBot/app"
+  }
+} 

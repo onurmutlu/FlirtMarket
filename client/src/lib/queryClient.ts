@@ -7,14 +7,25 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// API base URL'ini ortama göre ayarla
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:8000' : '';
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const fullUrl = url.startsWith('/api') ? `${API_BASE_URL}${url}` : url;
+  const token = localStorage.getItem('auth_token');
+  
+  const headers: Record<string, string> = {
+    ...(data && { "Content-Type": "application/json" }),
+    ...(token && { "Authorization": `Bearer ${token}` })
+  };
+  
+  const res = await fetch(fullUrl, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -29,7 +40,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const url = queryKey[0] as string;
+    const fullUrl = url.startsWith('/api') ? `${API_BASE_URL}${url}` : url;
+    const token = localStorage.getItem('auth_token');
+    
+    const headers: Record<string, string> = {
+      ...(token && { "Authorization": `Bearer ${token}` })
+    };
+    
+    const res = await fetch(fullUrl, {
+      headers,
       credentials: "include",
     });
 
@@ -47,8 +67,8 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      staleTime: 5 * 60 * 1000, // 5 dakika
+      retry: 1,
     },
     mutations: {
       retry: false,

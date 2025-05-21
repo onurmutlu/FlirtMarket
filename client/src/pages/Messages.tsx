@@ -62,7 +62,7 @@ export default function Messages({ onOpenConversation }: MessagesProps) {
         </div>
         <div className="flex-1 flex items-center justify-center p-6 text-center">
           <div>
-            <span className="material-icons text-4xl text-muted-foreground mb-3">error_outline</span>
+            <div className="i-material-symbols:error-outline text-4xl text-muted-foreground mb-3"></div>
             <p className="text-foreground font-medium mb-2">Mesajlar yüklenemedi</p>
             <p className="text-sm text-muted-foreground">Lütfen daha sonra tekrar deneyin</p>
           </div>
@@ -79,7 +79,7 @@ export default function Messages({ onOpenConversation }: MessagesProps) {
           <h2 className="text-lg font-bold text-foreground">Mesajlar</h2>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center p-8 h-full text-center">
-          <span className="material-icons text-5xl text-muted-foreground mb-3">chat_bubble_outline</span>
+          <div className="i-material-symbols:chat-bubble-outline text-5xl text-muted-foreground mb-3"></div>
           <h3 className="text-lg font-medium text-muted-foreground mb-1">Mesaj kutun boş</h3>
           <p className="text-sm text-muted-foreground mb-4">Şovcularla mesajlaşmaya başla</p>
           <button className="px-6 py-2 bg-primary text-white rounded-full font-medium">
@@ -102,7 +102,7 @@ export default function Messages({ onOpenConversation }: MessagesProps) {
           <div 
             key={conversation.id} 
             className="p-3 border-b border-border flex items-center space-x-3 hover:bg-card/80 transition-colors cursor-pointer"
-            onClick={() => handleConversationClick(conversation.id)}
+            onClick={() => handleConversationClick(Number(conversation.id))}
           >
             <div className="relative">
               <img 
@@ -112,7 +112,7 @@ export default function Messages({ onOpenConversation }: MessagesProps) {
               />
               
               {/* Online indicator */}
-              {isUserActive(conversation.otherUser?.lastActive) && (
+              {isUserActive(conversation.otherUser?.lastActive ? new Date(conversation.otherUser.lastActive) : undefined) && (
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
               )}
             </div>

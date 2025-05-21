@@ -5,7 +5,7 @@ import { useUser } from "@/contexts/UserContext";
 import { format } from "date-fns";
 
 interface ConversationProps {
-  conversationId: number;
+  conversationId: string;
   onBack: () => void;
 }
 
@@ -199,13 +199,10 @@ export default function Conversation({ conversationId, onBack }: ConversationPro
             </h3>
             
             <div className="flex items-center">
-              {isUserActive(otherUser.lastActive) ? (
-                <>
-                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></div>
-                  <span className="text-xs text-muted-foreground">Çevrimiçi</span>
-                </>
+              {isUserActive(otherUser.lastActive ? new Date(otherUser.lastActive) : undefined) ? (
+                <span className="text-xs text-green-500">Online</span>
               ) : (
-                <span className="text-xs text-muted-foreground">Son görülme: {formatLastSeen(otherUser.lastActive)}</span>
+                <span className="text-xs text-muted-foreground">Son görülme: {formatLastSeen(otherUser.lastActive ? new Date(otherUser.lastActive) : undefined)}</span>
               )}
             </div>
           </div>

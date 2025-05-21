@@ -1,57 +1,54 @@
-import { pgTable, text, serial, integer, boolean, timestamp, real, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, serial, timestamp, text, jsonb, boolean, integer } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 import { z } from "zod";
 
 // User types: regular (male) and performer (female)
 export const USER_TYPES = {
-  REGULAR: "regular",
+  REGULAR: "user",
   PERFORMER: "performer",
   ADMIN: "admin",
 } as const;
 
 // User type values as simple string array for schema
-export const USER_TYPE_VALUES = ["regular", "performer", "admin"];
+export const USER_TYPE_VALUES = ["user", "performer", "admin"] as const;
 
 // User table
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  telegramId: text("telegram_id").notNull().unique(),
-  username: text("username"),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name"),
-  type: text("type", { enum: USER_TYPE_VALUES }).notNull().default(USER_TYPES.REGULAR),
-  coins: integer("coins").notNull().default(0),
-  profilePhoto: text("profile_photo"),
-  bio: text("bio"),
-  location: text("location"),
-  interests: jsonb("interests").default([]),
-  age: integer("age"),
-  rating: real("rating").default(0),
-  referralCode: text("referral_code").unique(),
-  referredBy: text("referred_by"),
-  messagePrice: integer("message_price"),
-  responseRate: real("response_rate"),
-  responseTime: integer("response_time"), // in minutes
-  createdAt: timestamp("created_at").defaultNow(),
-  lastActive: timestamp("last_active").defaultNow(),
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  telegramId: varchar('telegram_id').notNull(),
+  firstName: varchar('first_name').notNull(),
+  lastName: varchar('last_name'),
+  username: varchar('username'),
+  type: varchar('type', { length: 50 }).notNull().$type<UserType>(),
+  coins: integer('coins').notNull().default(0),
+  referralCode: varchar('referral_code').notNull(),
+  referredBy: integer('referred_by'),
+  profilePhoto: varchar('profile_photo'),
+  bio: text('bio'),
+  location: varchar('location'),
+  age: integer('age'),
+  interests: jsonb('interests').$type<string[]>(),
+  messagePrice: integer('message_price'),
+  rating: integer('rating').default(0),
+  createdAt: timestamp('created_at').notNull(),
+  lastActive: timestamp('last_active').notNull(),
+  passwordHash: varchar('password_hash'),
 });
 
 // Insert schema
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
-  rating: true,
-  responseRate: true,
 });
 
 // Conversations table
 export const conversations = pgTable("conversations", {
-  id: serial("id").primaryKey(),
-  regularUserId: integer("regular_user_id").notNull(),
-  performerId: integer("performer_id").notNull(),
-  lastMessageAt: timestamp("last_message_at").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
+  id: serial('id').primaryKey(),
+  regularUserId: integer('regular_user_id').notNull(),
+  performerId: integer('performer_id').notNull(),
+  lastMessageAt: timestamp('last_message_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const insertConversationSchema = createInsertSchema(conversations).omit({
@@ -62,14 +59,14 @@ export const insertConversationSchema = createInsertSchema(conversations).omit({
 
 // Messages table
 export const messages = pgTable("messages", {
-  id: serial("id").primaryKey(),
-  conversationId: integer("conversation_id").notNull(),
-  senderId: integer("sender_id").notNull(),
-  recipientId: integer("recipient_id").notNull(),
-  content: text("content").notNull(),
-  cost: integer("cost"),
-  read: boolean("read").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
+  id: serial('id').primaryKey(),
+  conversationId: integer('conversation_id').notNull(),
+  senderId: integer('sender_id').notNull(),
+  recipientId: integer('recipient_id').notNull(),
+  content: text('content').notNull(),
+  cost: integer('cost'),
+  read: boolean('read').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const insertMessageSchema = createInsertSchema(messages).omit({
@@ -80,13 +77,13 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
 
 // Transactions table for coin operations
 export const transactions = pgTable("transactions", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
-  type: text("type", { enum: ["purchase", "spend", "earn", "referral"] }).notNull(),
-  amount: integer("amount").notNull(),
-  description: text("description"),
-  relatedUserId: integer("related_user_id"), // For messages or referrals
-  createdAt: timestamp("created_at").defaultNow(),
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull(),
+  type: varchar('type').notNull(),
+  amount: integer('amount').notNull(),
+  description: text('description'),
+  relatedUserId: integer('related_user_id'), // For messages or referrals
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const insertTransactionSchema = createInsertSchema(transactions).omit({
@@ -144,14 +141,61 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
 }));
 
 // Type definitions
-export type User = typeof users.$inferSelect;
+export type DbUser = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export type Conversation = typeof conversations.$inferSelect;
+export type DbConversation = typeof conversations.$inferSelect;
 export type InsertConversation = z.infer<typeof insertConversationSchema>;
 
-export type Message = typeof messages.$inferSelect;
+export type DbMessage = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 
-export type Transaction = typeof transactions.$inferSelect;
+export type DbTransaction = typeof transactions.$inferSelect;
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
+
+export type UserType = typeof USER_TYPE_VALUES[number];
+
+// Extended interfaces with additional fields
+export interface User {
+  id: number;
+  username?: string | null;
+  type: UserType;
+  displayName: string;
+  firstName: string;
+  lastName?: string | null;
+  profilePhoto?: string | null;
+  bio?: string | null;
+  age?: number | null;
+  location?: string | null;
+  interests?: string[] | null;
+  messagePrice?: number | null;
+  rating?: number | null;
+  lastActive: Date;
+  responseTime?: number | null;
+  avatar?: string | null;
+  coins: number;
+  totalSpent: number;
+  isPerformer: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  referralCode: string;
+  telegramId: string;
+  passwordHash?: string | null;
+}
+
+export interface Message extends DbMessage {
+  sender?: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface Transaction {
+  id: number;
+  userId: number;
+  type: 'purchase' | 'spend' | 'earn' | 'referral';
+  amount: number;
+  description?: string | null;
+  relatedUserId?: number | null;
+  createdAt: Date;
+}

@@ -4,8 +4,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Message, Conversation, User } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
-export function useConversation(conversationId: number) {
-  const { user, spendCoins } = useUser();
+export function useConversation(conversationId: string) {
+  const { user } = useUser();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
@@ -29,7 +29,7 @@ export function useConversation(conversationId: number) {
       }
       
       const conversations = await response.json();
-      const conversation = conversations.find((c: Conversation) => c.id === conversationId);
+      const conversation = conversations.find((c: Conversation) => c.id.toString() === conversationId);
       
       if (!conversation) {
         throw new Error('Conversation not found');
@@ -88,7 +88,7 @@ export function useConversation(conversationId: number) {
       queryClient.invalidateQueries({ queryKey: [`/api/conversations/${conversationId}/messages`] });
       
       // If regular user, update coin count in context (already updated in DB by backend)
-      if (user?.type === 'regular' && data.updatedCoins !== undefined) {
+      if (user?.type === 'user' && data.updatedCoins !== undefined) {
         // The coin balance is already updated in backend and will be reflected in the user context
         // We don't need to manually update it here
       }

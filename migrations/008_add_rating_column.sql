@@ -1,0 +1,2 @@
+-- Rating sütununu ekle
+ALTER TABLE users ADD COLUMN IF NOT EXISTS rating DECIMAL DEFAULT NULL; 

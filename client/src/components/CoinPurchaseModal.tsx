@@ -127,7 +127,7 @@ export default function CoinPurchaseModal({ onClose }: CoinPurchaseModalProps) {
       onClick={onClose}
     >
       <div 
-        className="w-11/12 max-w-md bg-card rounded-2xl overflow-hidden"
+        className="w-11/12 max-w-md bg-background/95 backdrop-blur-xl rounded-2xl overflow-hidden shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b border-border flex justify-between items-center">

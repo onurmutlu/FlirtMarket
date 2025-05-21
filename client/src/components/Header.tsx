@@ -1,10 +1,11 @@
 import { useUser } from "@/contexts/UserContext";
 import { Coins, Plus } from "lucide-react";
+import { User } from "@/types";
 
 interface HeaderProps {
   onCoinPurchase: () => void;
   // Added user prop so we can pass it directly from App during development
-  user?: any;
+  user?: User;
 }
 
 export default function Header({ onCoinPurchase, user: userProp }: HeaderProps) {
@@ -67,7 +68,9 @@ export default function Header({ onCoinPurchase, user: userProp }: HeaderProps) 
   );
 }
 
-function getUserStatus(lastActive: Date): string {
+function getUserStatus(lastActive?: string | Date): string {
+  if (!lastActive) return "Online";
+  
   // Convert to date object if it's a string
   const lastActiveDate = typeof lastActive === 'string' 
     ? new Date(lastActive) 

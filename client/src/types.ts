@@ -1,32 +1,35 @@
 export interface User {
   id: number;
-  telegramId: string;
-  username?: string | null;
-  firstName: string;
-  lastName?: string | null;
-  type: 'regular' | 'performer' | 'admin';
+  username: string;
+  type: 'performer' | 'user' | 'admin';
+  displayName: string;
+  firstName?: string;
+  lastName?: string;
+  profilePhoto?: string;
+  bio?: string;
+  age?: number;
+  location?: string;
+  interests?: string[];
+  messagePrice?: number;
+  rating?: number;
+  lastActive?: string;
+  responseTime?: number;
+  avatar?: string;
   coins: number;
-  profilePhoto?: string | null;
-  bio?: string | null;
-  location?: string | null;
-  interests: string[];
-  age?: number | null;
-  rating: number;
-  referralCode?: string | null;
-  referredBy?: string | null;
-  messagePrice?: number | null;
-  responseRate?: number | null;
-  responseTime?: number | null; // in minutes
-  createdAt: Date;
-  lastActive: Date;
+  totalSpent: number;
+  isPerformer: boolean;
+  createdAt: string;
+  updatedAt: string;
+  referralCode?: string;
+  telegramId?: string;
 }
 
 export interface Conversation {
-  id: number;
-  regularUserId: number;
-  performerId: number;
-  lastMessageAt: Date;
-  createdAt: Date;
+  id: string;
+  regularUserId: string;
+  performerId: string;
+  lastMessageAt: string;
+  createdAt: string;
   otherUser?: User;
   lastMessage?: Message | null;
   unreadCount?: number;
@@ -34,13 +37,15 @@ export interface Conversation {
 
 export interface Message {
   id: number;
-  conversationId: number;
-  senderId: number;
-  recipientId: number;
   content: string;
-  cost?: number | null;
+  senderId: string;
+  senderName: string;
+  createdAt: string;
   read: boolean;
-  createdAt: Date;
+  sender?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface Transaction {
@@ -56,7 +61,7 @@ export interface Transaction {
 export interface CoinPackage {
   amount: number;
   price: number;
-  discount?: number;
+  discount: number;
   isPopular?: boolean;
 }
 
@@ -65,6 +70,8 @@ export interface TelegramUser {
   first_name: string;
   last_name?: string;
   username?: string;
+  language_code?: string;
+  is_premium?: boolean;
   photo_url?: string;
   auth_date: number;
   hash: string;

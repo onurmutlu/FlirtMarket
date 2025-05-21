@@ -1,9 +1,9 @@
 import { User } from '@/types';
-import { Coins, MessageCircle, Star } from 'lucide-react';
+import { Coins, MessageCircle } from 'lucide-react';
 
 interface PerformerCardProps {
   performer: User;
-  onClick: (performerId: number) => void;
+  onClick: (performerId: string) => void;
 }
 
 export default function PerformerCard({ performer, onClick }: PerformerCardProps) {
@@ -36,7 +36,7 @@ export default function PerformerCard({ performer, onClick }: PerformerCardProps
             <span className="w-1.5 h-1.5 bg-white rounded-full mr-1"></span>
             Online
           </div>
-        ) : performer.rating >= 4.8 ? (
+        ) : (performer.rating || 0) >= 4.8 ? (
           <div className="absolute top-2 right-2 bg-secondary text-white text-xs px-2 py-0.5 rounded-full flex items-center">
             Premium
           </div>
@@ -53,7 +53,7 @@ export default function PerformerCard({ performer, onClick }: PerformerCardProps
             </span>
             <div className="flex items-center bg-black/40 rounded-full px-2 py-0.5">
               <span className="material-icons text-yellow-400 text-xs mr-0.5">star</span>
-              <span className="text-white text-xs">{performer.rating.toFixed(1)}</span>
+              <span className="text-white text-xs">{(performer.rating || 0).toFixed(1)}</span>
             </div>
           </div>
         </div>
@@ -82,8 +82,9 @@ export default function PerformerCard({ performer, onClick }: PerformerCardProps
   );
 }
 
-// Helper function to check if user is active (online)
-function isUserActive(lastActive: Date): boolean {
+function isUserActive(lastActive?: string | Date): boolean {
+  if (!lastActive) return false;
+  
   // Convert to date object if it's a string
   const lastActiveDate = typeof lastActive === 'string' 
     ? new Date(lastActive) 
@@ -95,8 +96,9 @@ function isUserActive(lastActive: Date): boolean {
   return diffMinutes < 5;
 }
 
-// Helper function to check if user is new (less than 3 days)
-function isNewUser(createdAt: Date): boolean {
+function isNewUser(createdAt?: string | Date): boolean {
+  if (!createdAt) return false;
+  
   // Convert to date object if it's a string
   const createdAtDate = typeof createdAt === 'string' 
     ? new Date(createdAt) 

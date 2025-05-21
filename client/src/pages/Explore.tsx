@@ -5,7 +5,7 @@ import { User } from '@/types';
 import { Search, SlidersHorizontal, SearchX, AlertCircle } from 'lucide-react';
 
 interface ExploreProps {
-  onViewProfile: (performerId: number) => void;
+  onViewProfile: (performerId: string) => void;
 }
 
 type CategoryType = 'all' | 'new' | 'trending' | 'online' | 'premium';
@@ -158,17 +158,18 @@ function filterPerformers(performers: User[], category: CategoryType): User[] {
     
     case 'trending':
       // Sort by rating for trending
-      return [...performers].sort((a, b) => b.rating - a.rating);
+      return [...performers].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     
     case 'online':
       return performers.filter(performer => {
+        if (!performer.lastActive) return false;
         const lastActive = new Date(performer.lastActive);
         const minutesSinceActive = Math.floor((new Date().getTime() - lastActive.getTime()) / (1000 * 60));
         return minutesSinceActive < 5; // Active in the last 5 minutes
       });
     
     case 'premium':
-      return performers.filter(performer => performer.rating >= 4.8);
+      return performers.filter(performer => (performer.rating || 0) >= 4.8);
     
     case 'all':
     default:
