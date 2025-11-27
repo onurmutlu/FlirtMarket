@@ -7,6 +7,7 @@ import { EarningsChart } from '../components/EarningsChart';
 import { MissionBox } from '../components/MissionBox';
 import { ReferralStats } from '../components/ReferralStats';
 import { BadgeStatus } from '../components/BadgeStatus';
+import { MonetizationPanel } from '../components/MonetizationPanel';
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 
@@ -115,6 +116,11 @@ export default function PerformerDashboard() {
           <ReferralStats userId={userId} />
           <BadgeStatus userId={userId} />
         </div>
+      </div>
+
+      {/* Monetizasyon Bölümü */}
+      <div className="mt-6">
+        <MonetizationPanel userId={userId} />
       </div>
     </div>
   );

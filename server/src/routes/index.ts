@@ -7,6 +7,7 @@ import messagesRouter from './messages';
 import performerRouter from './performer';
 import adminRouter from './admin';
 import usersRouter from './users';
+import monetizationRouter from './monetization';
 import { setServer } from '../services/MessageService';
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -22,6 +23,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/performer', performerRouter);
   app.use('/api/admin', adminRouter);
   app.use('/api/users', usersRouter);
+  app.use('/api/monetization', monetizationRouter);
 
   // Setup Telegram bot
   setupBot(server);

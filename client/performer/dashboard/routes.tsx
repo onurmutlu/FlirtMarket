@@ -6,6 +6,7 @@ import { StatsPage } from './pages/StatsPage';
 import { MissionsPage } from './pages/MissionsPage';
 import { ReferralsPage } from './pages/ReferralsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { MonetizationPage } from './pages/MonetizationPage';
 
 export const performerRoutes = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const performerRoutes = createBrowserRouter([
       {
         path: 'settings',
         element: <SettingsPage />,
+      },
+      {
+        path: 'monetization',
+        element: <MonetizationPage />,
       },
     ],
   },
